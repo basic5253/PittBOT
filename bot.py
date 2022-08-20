@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 import util.invites
 from util.log import Log
 from util.db import DbGuild, DbInvite, DbUser, DbCategory, Base
-
+import googletrans
 
 bot = discord.Bot(intents=discord.Intents.all())
 
@@ -1249,7 +1249,17 @@ async def auto_link(ctx):
         content=message_content,
         ephemeral=True
     )
-
+@bot.translate_command(
+    description = "Automatically translate any langugage into another using Google Tranlsate API", aliases = ['tr']
+)
+async def translate(ctx, lang_to, *args):
+    lang_to = lang_to.lower()
+    if lang_to not in googletrans.LANGUAGES and lang_to not in googletrans.LANGCODES:
+        raise bot.BadArgument("Unfortunately this language cannot be translated. Please contact mods and devs for further instruction.")
+    text = ' '.join(args)
+    translator = google.trans.Translator()
+    text_translator = translator.translate(text, dest=lang_to).text
+    await ctx.send(text.translated)
 # ------------------------------- CONTEXT MENU COMMANDS -------------------------------
 
 
